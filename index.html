@@ -238,6 +238,7 @@ D drink &middot; F fish &middot; G gold &middot; S slay &middot; &larr; &rarr; a
 'use strict';
 // A tiny Extended Color BASIC + MC6847 machine, just big enough to run the
 // original listing verbatim. Timings are measured against XRoar (60Hz ticks).
+const VERSION = '1.5'; // bump on every release; shown on the start screen
 const SPEED = 1; // ponytail: calibration knob, >1 = slower than a real CoCo
 
 // ---------- palette (sampled from XRoar) ----------
@@ -460,8 +461,11 @@ function initAudio() {
     src.connect(AC.destination); src.start(0);
   }
 }
-for (const ev of ['touchend', 'click']) addEventListener(ev, initAudio, { passive: true });
+for (const ev of ['pointerdown', 'pointerup', 'touchend', 'click', 'keydown']) addEventListener(ev, initAudio, { passive: true, capture: true });
+// iOS 17+: play like a media app, so the ring/silent switch doesn't mute the game
+if (navigator.audioSession) try { navigator.audioSession.type = 'playback'; } catch (e) {}
 function play(s) {
+  if (AC && AC.state !== 'running') AC.resume();
   const t0 = AC ? AC.currentTime + Math.max(0, (vt - performance.now()) / 1000) : 0;
   const sec = l => 256 / (l * tempo * 60); // T2 L4 = 0.533s, measured in XRoar
   let i = 0, dur = 0;
@@ -789,6 +793,7 @@ for (const s of document.getElementById('bas').textContent.split('\n')) {
 out('EXTENDED COLOR BASIC 1.1'); putc(13);
 out('COPR. 1980, 1981 BY TANDY'); putc(13);
 out('UNDER LICENSE FROM MICROSOFT'); putc(13); putc(13);
+out('RETURN TO THE CASTLE V' + VERSION); putc(13); putc(13);
 out('OK'); putc(13);
 autotype = 'RUN\r'; nextAuto = performance.now() + 1200;
 requestAnimationFrame(frame);
