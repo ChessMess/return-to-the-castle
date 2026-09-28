@@ -2,19 +2,37 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
 <title>Return to the Castle</title>
 <style>
 html,body{margin:0;height:100%;background:#000;color:#6a6;font:13px/1.5 monospace}
 body{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px}
 canvas{width:min(96vw,calc((100vh - 70px)*4/3));image-rendering:pixelated;image-rendering:crisp-edges}
 p{margin:0 16px;text-align:center}
+#pad{display:none;grid-template-columns:repeat(6,1fr);gap:6px;width:min(100vw - 16px,560px);touch-action:none;user-select:none;-webkit-user-select:none}
+#pad button{height:52px;border:0;border-radius:6px;background:#222;color:#eee;font:bold 20px monospace;box-shadow:0 3px 0 #444;touch-action:none;-webkit-tap-highlight-color:transparent}
+#pad button:active{background:#3a3;color:#000;transform:translateY(2px);box-shadow:0 1px 0 #444}
+#pad .w2{grid-column:span 2}
+@media (pointer:coarse){
+  body{gap:12px;overscroll-behavior:none}
+  canvas{width:min(100vw,calc((100dvh - 330px)*4/3))}
+  #pad{display:grid}
+  #pad button{height:clamp(52px,9dvh,84px);font-size:24px}
+  p{display:none}
+}
+@media (pointer:coarse) and (orientation:landscape){
+  body{flex-direction:row;justify-content:center;align-items:center;padding:0}
+  canvas{width:min(62vw,calc((100dvh - 16px)*4/3))}
+  #pad{width:34vw}
+  #pad button{height:min(52px,15dvh)}
+}
 </style>
 </head>
 <body>
 <canvas id="scr" width="320" height="240"></canvas>
 <p>RETURN TO THE CASTLE by James Wood &middot; 80 Micro, April 1983 &middot; TRS-80 Color Computer, 16K Extended Color BASIC<br>
 D drink &middot; F fish &middot; G gold &middot; S slay &middot; &larr; &rarr; arrows &middot; ENTER &middot; ESC = BREAK (then RUN or LIST)</p>
+<div id="pad"><button data-k="65">A</button><button data-k="66">B</button><button data-k="68">D</button><button data-k="70">F</button><button data-k="71">G</button><button data-k="78">N</button><button data-k="82">R</button><button data-k="83">S</button><button data-k="84">T</button><button data-k="87">W</button><button data-k="89">Y</button><button data-k="0">RUN</button><button class="w2" data-k="8">&larr;</button><button class="w2" data-k="13">ENTER</button><button class="w2" data-k="9">&rarr;</button></div>
 
 <script type="text/plain" id="bas">5 ' JAMES W. WOOD,424 N. MISSOURI,ATWOOD, IL, 61913, MAY-1982
 10 CLS:PRINT@262,"RETURN TO THE CASTLE":FORTI=1TO400:NEXTTI:PRINT@295,"AND WIN A PRINCESS!"
@@ -379,19 +397,30 @@ function cocoKey(e) {
   if (e.key.length === 1) { const c = e.key.toUpperCase().charCodeAt(0); if (c >= 32 && c <= 95) return c; }
   return 0;
 }
+function press(k) {
+  initAudio();
+  autotype = '';
+  held.add(k);
+  if (k === 3) { if (running) stop('\rBREAK' + (li >= 0 ? ' IN ' + prog[li].n : '')); else { inputLine = ''; putc(13); } return; }
+  if (running) keyBuf = k; else typeKey(k);
+}
 addEventListener('keydown', e => {
   if (e.metaKey || e.ctrlKey || e.altKey) return;
   const k = cocoKey(e);
   if (!k) return;
   e.preventDefault();
-  initAudio();
-  if (e.repeat) return; // no autorepeat on a CoCo
-  autotype = '';
-  held.add(k);
-  if (k === 3) { if (running) stop('\rBREAK' + (li >= 0 ? ' IN ' + prog[li].n : '')); else { inputLine = ''; putc(13); } return; }
-  if (running) keyBuf = k; else typeKey(k);
+  if (!e.repeat) press(k); // no autorepeat on a CoCo
 });
 addEventListener('keyup', e => held.delete(cocoKey(e)));
+// on-screen keys for phones: same path as the keyboard, held while the finger is down
+for (const b of document.querySelectorAll('#pad button')) {
+  const k = +b.dataset.k;
+  b.addEventListener('pointerdown', e => {
+    e.preventDefault(); b.setPointerCapture(e.pointerId);
+    if (k) press(k); else if (!running) { initAudio(); autotype = 'RUN\r'; nextAuto = 0; }
+  });
+  for (const ev of ['pointerup', 'pointercancel']) b.addEventListener(ev, () => held.delete(k));
+}
 addEventListener('blur', () => held.clear());
 
 function typeKey(k) {

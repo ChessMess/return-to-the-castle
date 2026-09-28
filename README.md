@@ -12,6 +12,10 @@ and keyboard behaviour matched against XRoar. The only change to the listing is 
 
 Keys: D drink · F fish · G gold · S slay · ← → arrows · ENTER · ESC = BREAK (then `RUN` or `LIST`).
 
+On phones and tablets, big on-screen keys appear under the screen (beside it in landscape) with every
+key the game uses. Hold ← / → at the dragon and crossroads just like the real arrow keys; RUN restarts
+after the game ends.
+
 Note: line 13076 in the published listing is missing a space (`TCTHEN`), so buying food from a
 stranger stops with `?SN ERROR IN 13076`, exactly as on a real CoCo. To fix it, type at the `OK` prompt:
 
