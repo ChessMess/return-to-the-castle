@@ -6,8 +6,9 @@
 for the TRS-80 Color Computer (16K, Extended Color BASIC).
 
 `castle.bas` is the original listing, transcribed and verified on XRoar. `index.html` runs it
-unmodified on a small Extended Color BASIC / MC6847 emulation in the browser, with timing, graphics
-and keyboard behaviour matched against XRoar.
+on a small Extended Color BASIC / MC6847 emulation in the browser, with timing, graphics
+and keyboard behaviour matched against XRoar. The only change to the listing is one added line,
+`31 FORTI=1TO780:NEXTTI`, which holds the stats screen about a second longer.
 
 Keys: D drink · F fish · G gold · S slay · ← → arrows · ENTER · ESC = BREAK (then `RUN` or `LIST`).
 
