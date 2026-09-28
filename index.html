@@ -1,0 +1,752 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Return to the Castle</title>
+<style>
+html,body{margin:0;height:100%;background:#000;color:#6a6;font:13px/1.5 monospace}
+body{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px}
+canvas{width:min(96vw,calc((100vh - 70px)*4/3));image-rendering:pixelated;image-rendering:crisp-edges}
+p{margin:0 16px;text-align:center}
+</style>
+</head>
+<body>
+<canvas id="scr" width="320" height="240"></canvas>
+<p>RETURN TO THE CASTLE by James Wood &middot; 80 Micro, April 1983 &middot; TRS-80 Color Computer, 16K Extended Color BASIC<br>
+D drink &middot; F fish &middot; G gold &middot; S slay &middot; &larr; &rarr; arrows &middot; ENTER &middot; ESC = BREAK (then RUN or LIST)</p>
+
+<script type="text/plain" id="bas">5 ' JAMES W. WOOD,424 N. MISSOURI,ATWOOD, IL, 61913, MAY-1982
+10 CLS:PRINT@262,"RETURN TO THE CASTLE":FORTI=1TO400:NEXTTI:PRINT@295,"AND WIN A PRINCESS!"
+11 W=RND(3)+2:S=40+RND(3)*10:RC=10+RND(50)
+12 DC=100+RND(50)
+13 FORTI=1TO500:NEXTTI:CLS:PRINT@42,"INSTRUCTIONS";:PRINT@65,"AT POOL- <D> TO DRINK";:PRINT@97,"IF FISH APPEARS- <F> TO CATCH";:PRINT@161," <S> TO ESCAPE SNAKE OR SPIDER";
+14 PRINT@225,"AT ";CHR$(34);"Y";CHR$(34);" IN ROAD, AND AT DRAGON-";:PRINT@257,"USE LEFT AND RIGHT ARROWS.":PRINT@321,"PRESS <G> TO PICK UP GOLD";
+15 PRINT@480,"  PRESS <ENTER> TO CONTINUE";
+16 A$=INKEY$:IFA$=""THEN16
+17 CLS
+20 TIMER=0:D=D+1
+21 GOSUB11000
+25 CLS:PRINT@160," UNITS WATER,",W:PRINT@192,"    STRENGTH,",S:PRINT@224,"  GOLD COINS,",TC:PRINT@258,"DAY NUMBER,",D:PRINT@292,"DISTANCE,",DI
+26 IFP=1THENPRINT@40,"POISON WATER":P=0
+27 IFYW=1THENPRINT@419,"YOU MADE IT HOME!!":GOTO20010
+28 IF YD=1THENPRINT@417,"THE FOREST'S ANIMALS ARE TRICKY":PRINT@455,"YOU'RE DEAD":GOTO20010
+29 IF SB=1 THENPRINT@40,"YOU TAKE A BITE":SB=0
+30 IFS<0THENPRINT@419,"YOU DIE OF EXHAUSTION!":GOTO20010
+39 IFTIMER>5000THENGOTO2000
+40 ON RND(10)GOSUB1000,3000,4000,6000,7000,8000,9000,10000,12000,13000
+42 IFDI>DC THENGOSUB5000
+50 IFW<0THENW=0:S=S-5
+60 IF RND(30)=1 THEN CLS:PRINT@232,"WRONG WAY":FORTI=1TO400:NEXTTI:DI=INT(DI/2)
+900 GOTO25
+1000 PMODE3,1:PCLS3:DI=DI+3
+1010 CIRCLE(100,130),80,1,.3
+1020 COLOR1,3:LINE(0,100)-(255,100),PSET
+1030 PAINT(2,102),1,1
+1040 COLOR4,1:LINE(0,0)-(255,191),PSET,B
+1050 COLOR2,1:LINE(190,110)-(200,60),PSET,BF
+1060 CIRCLE(195,45),30,1,.5
+1070 PAINT(195,45),1,1
+1080 SCREEN1,0:FORTI=1TO700:NEXTTI:IFINKEY$="D"THENW=W+1:S=S+2:IFRND(10)=1THENP=1:S=S-10:W=W-1
+1085 F=RND(5):IFF=1 THENDRAW"BM"+STR$(RND(40)+80)+",139R5E2D1G1D1F1D1H2L5"ELSERETURN
+1086 FORTI=1TO200:NEXTTI:IFINKEY$="F"THENS=S+5:CLS:PRINT@460,"GOOD FISH !"ELSEPRINT@460,"MISSED"
+1087 FORTI=1TO600:NEXTTI:RETURN
+2000 PMODE3,1:PCLS:S=S-5
+2010 FORA=1TO30:PSET(RND(255),RND(130),RND(3)+1):NEXTA:PMODE4,1:SCREEN1,1
+2015 FORTI=1TO900:NEXTTI
+2020 GOTO20
+3000 PMODE3,1:PCLS:S=S-3:W=W-1:DI=DI+RND(6)
+3010 COLOR3,1:LINE(0,0)-(255,80),PSET,B
+3020 PAINT(2,2),3,3
+3030 COLOR2,1:LINE(110,191)-(110,170),PSET:LINE-(20,80),PSET:LINE-(30,80),PSET:LINE-(120,155),PSET:LINE-(220,80),PSET:LINE-(230,80),PSET:LINE-(130,170),PSET:LINE-(130,191),PSET:LINE-(110,191),PSET
+3040 PAINT(120,180),2,2
+3050 COLOR4,1:LINE(0,0)-(255,191),PSET,B
+3060 SCREEN1,0
+3070 IFPEEK(343)=247 OR PEEK(344)=247THENRETURNELSE3070
+4000 PMODE1,1:PCLS:DI=DI+RND(5)
+4010 COLOR3,1:LINE(0,0)-(255,90),PSET,BF
+4020 COLOR2,1:LINE(0,170)-(255,191),PSET,BF
+4040 GC=RND(6):FORA=1TOGC:PSET(50+6*A,150):NEXTA
+4050 COLOR4,1:LINE(0,0)-(255,191),PSET,B
+4060 SCREEN1,0:FORTI=1TO600:IFINKEY$="G"THENTC=TC+GC:RETURN ELSE NEXTTI
+4061 RETURN
+5000 PMODE3,1:PCLS3:CLS:SCREEN0,0:PRINT@200,"LOOK, THE CASTLE!"
+5010 COLOR2,3
+5020 DRAW"BM28,164U80R4D4R4U4R4D4R4U4R4D12R24U44R4D4R4U4R4D4R4U4R4D4R4U4R4D4R4U4R4D16R40U56R4D4R4U4R4D4R4U4R4D84R36U12R4D4R4U4R4D4R4U4R4D4R4U4R4D80L204"
+5030 DRAW"BM28,152L12G4D24R234U24H4L8"
+5040 DRAW"BM0,140R28":DRAW"BM232,140R22"
+5050 PAINT(30,160),2,2
+5060 PAINT(0,190),1,2
+5070 COLOR4,1:LINE(112,164)-(132,134),PSET,BF
+5080 COLOR4,1:LINE(0,0)-(255,191),PSET,B
+5090 SCREEN1,0:FORTI=1TO1000:NEXTTI:YW=1:IFTC>RC THEN GOTO15000 ELSECLS:PRINT@196,"SORRY,YOU'RE TOO POOR":PRINT@260,"YOU CAN'T WIN A PRINCESS!":GOTO20010
+6000 PMODE3,1:PCLS
+6010 DRAW"BM132,144U4R4U4R4U12E24U28L4D4L16U12R20E2F2E2F2R4D8L4D32F12E8F4E8F4E8F4E8F4E8D6G32R10D4R4D6R4D4L16U4R4U4L8D4L4D4L44U4L4U8L8D8R4D4L18"
+6020 PAINT(134,142),4,4:AA=50:B=140
+6025 PSET(156,70,2):PSET(158,70,2)
+6030 DF=RND(5):IFDF=1THENFORA=144TO80STEP-1:PSET(A,220-A,2):NEXTA:PLAY"L255V31O2ABC":ELSE6032
+6031 IF AA=66 THENS=S-10ELSEIF AA>66 AND AA<91 THEN YD=1:PLAY"O1L64ABDBDCA":S=0:RETURN
+6032 LINE(AA,B)-(AA+24,B-22),PRESET,BF
+6033 IFAA<11 THENCO=1:S=S-5:RETURN ELSEIF AA>115 THEN KD=1:S=S+5:DI=DI+10:RETURN
+6034 IFPEEK(344)=247THENAA=AA+8ELSEIFPEEK(343)=247THENAA=AA-8
+6035 DRAW"BM"+STR$(AA)+",140C4E8U8L6R6U2L1H1U1E1R2F1D1G1L1D2R6C2R8L8C4L6D8F8"
+6040 IFDF=1THENFORA=144TO80STEP-1:PRESET(A,220-A):NEXTA
+6900 SCREEN1,0
+6901 GOTO6030
+7000 GOSUB11000:CLS:PRINT@268,"RATS":FORTI=1TO400:NEXTTI:PMODE3,1:PCLS:SCREEN1,0
+7010 COLOR2,1
+7020 FORA=230TO20STEP-16
+7030 A$=STR$(A)
+7040 DRAW"BM"+A$+",100R8G4E4D4U4R8D4U4F4H4R4E2R6L6H2L12H2G2L2D2G2"
+7050 PCLS
+7060 B$=STR$(A-8)
+7070 DRAW"BM"+B$+",100R8D4U4F4H4R8G4E4D4U4R4E2R6L6H2L12H2G2L2D2G2"
+7080 PCLS
+7085 PLAY"O4L255V31AB"
+7090 NEXTA:RETURN
+8000 PMODE3,1:PCLS3
+8010 CIRCLE(130,100),20,2,1.5
+8020 CIRCLE(130,65),10,2
+8030 COLOR2,3
+8040 DRAW"BM146,80E30U40"
+8050 DRAW"BM114,80H30U40"
+8060 DRAW"BM112,95H50U30"
+8070 DRAW"BM148,95E50U30"
+8080 DRAW"BM 112,120G40D25"
+8090 DRAW"BM148,120F40D25"
+8100 DRAW"BM146,100F50D20"
+8110 DRAW"BM114,100G50D20"
+8120 DRAW"BM126,60U4H4"
+8130 DRAW"BM134,60U4E4"
+8150 PAINT(130,65),2,2
+8160 PAINT(130,100),2,2
+8170 CIRCLE(130,120),8,4:COLOR4,3:PAINT(130,120),4,4
+8180 PSET(127,60,1):PSET(133,60,1)
+8190 SCREEN1,0
+8200 GOSUB20000:RETURN
+9000 PMODE3,1:PCLS
+9010 COLOR2,1
+9020 CIRCLE(70,50),20,2,.5
+9030 CIRCLE(110,58),40,2,1,.25,.5
+9040 CIRCLE(110,58),30,2,1,.25,.5
+9050 DRAW"BM110,98R100"
+9060 DRAW"BM110,88R100"
+9070 CIRCLE(210,118),30,2,1,.75,1
+9080 CIRCLE(210,118),30,2,.7,.75,1
+9090 PAINT(114,92),2,2
+9100 PAINT(70,50),2,2
+9110 DRAW"BM40,55NR20G4E4H4F4"
+9120 PSET(60,45,3)
+9130 COLOR4,1:DRAW"BM54,56R10"
+9135 PLAY"L255O1V31DEFGFED"
+9140 SCREEN1,0:GOSUB20000:RETURN
+10000 PMODE3,1:PCLS3:DI=DI+5
+10010 COLOR1,3:LINE(0,112)-(255,191),PSET,BF
+10020 COLOR2,3:LINE(100,191)-(115,112),PSET:LINE-(135,112),PSET:LINE-(150,191),PSET:PAINT(104,198),2,2
+10030 COLOR4,1:LINE(0,0)-(255,191),PSET,B
+10100 SCREEN1,0:FORTI=1TO400:NEXTTI:RETURN
+11000 FORTI=1TO900:NEXTTI:RETURN
+12000 IFRND(4)<4THENRETURNELSEPMODE3,1:PCLS3
+12005 COLOR2,3:LINE(0,110)-(255,130),PSET:PAINT(10,120),1,2
+12015 LINE(40,80)-(200,140),PSET,BF:LINE(40,80)-(120,40),PSET:LINE-(200,80),PSET:PAINT(60,75),4,2
+12030 COLOR4,2:LINE(60,100)-(90,140),PSET,BF
+12040 DRAW"BM100,120R10L5D15L6":DRAW"BM120,120D15R8U15L8":DRAW"BM140,120R8L8D7R6L6D8R6":DRAW"BM160,115D6":DRAW"BM180,120L8D7R8D8L8":SCREEN1,0
+12045 PLAY"O2T6V31L8CP32FP32FP32CP32CP32CP32FP32FP32FP32L4FP32L8FP32GP32GP32DP32DP32DP32L4GP32L8P32EP32EP32L4EP32L8EP32EP32EP32L4EP32L8CP32CP32CP32DP32DP32EP32FP32FP32FP32L4F"
+12048 CLS:PRINT@134,"WELCOME TO ";CHR$(34);"JOE'S";CHR$(34);:PRINT@194,"(R)EFRESHMENTS  5 GOLD COINS";:PRINT@226,"ROOM & (B)OARD  10 GOLD COINS";:PRINT@290,"(N)EITHER";
+12050 A$=INKEY$:IFA$=""THEN12050
+12052 IFA$="R"THEN IF TC>4 THEN TC=TC-5:S=S+15:RETURN ELSE GOTO12058
+12056 IFA$="B" THENIF TC>9 THEN TC=TC-10:S=S+20:D=D+1:TIMER=0:RETURN ELSE GOTO12058
+12057 IFA$="N"THEN RETURN ELSE GOTO12050
+12058 CLS:PRINT@264,"YOU'RE TOO POOR!":FORTI=1TO400:NEXTTI:RETURN
+13000 FORTI=1TO500:NEXTTI:CLS:PRINT@40,"SOMEONE'S COMING!":FORTI=1TO400:NEXTTI
+13010 PRINT@100,"(A)TTACK":PRINT@132,"(T)RADE":PRINT@164,"(R)UN"
+13020 IK$=INKEY$
+13030 A$=INKEY$:IFA$="A"THENGOTO13040ELSEIFA$="T"THENGOTO13050ELSEIFA$="R"THENDI=DI-2:RETURNELSEGOTO13030
+13040 CLS:SS=20+RND(30):IFSS-S>30THENPRINT@200,"HE KILLED YOU!!":END
+13042 IFSS-S>15THENS=INT(S/2):PRINT@200,"YOU TAKE A BEATING":FORTI=1TO500:NEXTTI:IFRND(3)=1THENPRINT" HE TAKES YOUR GOLD!":TC=0:FORTI=1TO500:NEXTTI:RETURN ELSE RETURN
+13044 IFSS-S>3THENPRINT@200,"PICKED ON THE WRONG GUY!":FORTI=1TO500:NEXTTI:S=S-10:RETURN
+13046 IFS-SS>9THENPRINT@200,"HE GOT AWAY!":FORTI=1TO400:NEXTTI:IFRND(5)=1 THEN PRINT" HE DROPPED HIS GOLD!":TC=TC+RND(6):FORTI=1TO500:NEXTTI:RETURN ELSERETURN
+13048 PRINT@200,"KILLED HIM!":GC=RND(9):PRINT"  TOOK";GC;"GOLD COINS FROM":PRINT"HIS COIN POUCH":TC=TC+GC:FORTI=1TO500:NEXTTI:RETURN
+13050 CLS:ON RND(3) GOTO 13060,13070,13080
+13060 CLS:PRINT@192,"HE HAS NOTHING WORTH TRADING!":FORTI=1TO900:NEXTTI:RETURN
+13070 CLS:PRINT@193,"HE WILL SELL FOOD AND DRINK"
+13072 FC=RND(3):WC=RND(2)
+13073 PRINT"FOOD COSTS";FC;"GOLD COINS":PRINT"WATER COSTS";WC;"GOLD COINS":PRINT:PRINT"(W)ATER, (F)OOD, OR (B)OTH?"
+13074 A$=INKEY$:IFA$="W"THEN IF WC>TC THENGOTO13200ELSE TC=TC-WC:W=W+1:GOTO13300
+13076 IFA$="F"THENIFFC>TCTHENGOTO13200ELSETC=TC-FC:S=S+7:GOTO13300
+13078 IFA$="B"THENIF FC+WC>TC THENGOTO13200ELSETC=TC-FC-WC:S=S+7:W=W+1:GOTO13300
+13079 GOTO13074
+13080 PRINT@192,"HE OFFERS 2 GOLD COINS FOR WATER"
+13082 PRINT@233,"(S)ELL OR (R)EFUSE"
+13083 A$=INKEY$:IFA$=""THEN13083
+13084 IFA$="R"THENRETURNELSEIFA$="S"THEN13090ELSE 13083
+13090 IF W<1 THEN CLS:PRINT@197,"YOU DON'T HAVE WATER!!":FORTI=1TO400:NEXTTI:RETURN ELSE TC=TC+2:W=W-1:RETURN
+13200 CLS:PRINT@200,"YOUR TOO POOR!":FORTI=1TO500:NEXTTI
+13300 RETURN
+15000 PMODE3,1:PCLS:CLS:SCREEN0,0:PRINT@193,"BECAUSE YOU HAVE SHOWN SUCH":PRINT"SKILL AND BRAVERY, YOU HAVE WON":PRINT"THE HAND OF THE KING'S DAUGHTER."
+15001 FORTI=1TO900:NEXTTI
+15002 COLOR2,1
+15010 CIRCLE(136,56),12
+15020 DRAW"BM132,66D4L4G2L3G2L3G2D2G2D4G2F2D3F3D3F4R2F3D6R22U6E3L2E4U3E3U3E2H2U4H2U2H2L3H2L3H2L3U4"
+15030 DRAW"BM124,80R1F2D2G2L1H2U2E2"
+15040 DRAW"BM146,80R1F2D2G2L1H2U2E2"
+15045 PAINT(132,80),2,2:PAINT(136,56),2,2
+15046 COLOR3,1
+15050 CIRCLE(132,90),8,3
+15060 CIRCLE(141,90),8,3
+15061 PAINT(144,90),3,3:PAINT(130,90),3,3
+15062 LINE(120,72)-(133,88),PSET
+15063 LINE(148,72)-(141,88),PSET
+15070 PSET(132,52,3):PSET(140,52,3)
+15072 DRAW"BM132,60F2R4E2"
+15080 LINE(124,110)-(150,110),PSET
+15082 LINE-(168,172),PSET:LINE-(108,180),PSET:LINE-(124,110),PSET
+15090 PAINT(134,120),3,3
+15091 COLOR2,1:DRAW"BM128,179D12F2D2L16U2E2R4E2U7R6":PAINT(126,181),2,2
+15092 DRAW"BM148,175D14G2R16U2H2L4H2U10L4":PAINT(150,177),2,2
+15100 COLOR4,1:LINE(128,48)-(124,20),PSET:LINE-(144,46),PSET:LINE-(128,48),PSET:PAINT(130,30),4,4
+15110 COLOR3,1:LINE(124,20)-(100,64),PSET:LINE-(108,68),PSET:LINE-(116,72),PSET:LINE-(124,20),PSET:PAINT(104,60),3,3
+15999 SCREEN1,0:PLAY"O3V31T4L4FP32;11;P32L8;11;P32L4;11;P32FP32O4L4CO3P32L8AP32L4;11":FORTI=1TO600:NEXTTI:CLS:PRINT@200,"LUCKY WINNER!":GOTO20010
+20000 FORTI=1TO100:IFPEEK(341)=251 THEN S=S+2:RETURN
+20001 NEXTTI:SCREEN1,1:FORTI=1TO50:NEXTTI:SCREEN1,0
+20002 FORTI=1TO200:IFPEEK(341)=251 THEN S=S-10:SB=1:RETURN
+20003 NEXTTI
+20004 YD=1:S=0:RETURN
+20010 IK$=INKEY$
+20020 PRINT@482,"PLAY AGAIN (Y/N)"
+20030 A$=INKEY$:IFA$="Y"THENRUNELSEIFA$="N"THENENDELSE20030</script>
+<script>
+'use strict';
+// A tiny Extended Color BASIC + MC6847 machine, just big enough to run the
+// original listing verbatim. Timings are measured against XRoar (60Hz ticks).
+const SPEED = 1; // ponytail: calibration knob, >1 = slower than a real CoCo
+
+// ---------- palette (sampled from XRoar) ----------
+const rgb = (r, g, b) => (0xff000000 | b << 16 | g << 8 | r) >>> 0;
+const GREEN = rgb(46,188,36), YELLOW = rgb(255,255,151), BLUE = rgb(44,37,129), RED = rgb(131,26,55),
+  BUFF = rgb(255,255,255), CYAN = rgb(40,224,170), MAGENTA = rgb(255,60,255), ORANGE = rgb(255,130,40),
+  BLACK = rgb(0,0,0), INK = rgb(0,31,0), ART_L = rgb(236,120,83), ART_R = rgb(70,200,255);
+const PAL4 = [[GREEN, YELLOW, BLUE, RED], [BUFF, CYAN, MAGENTA, ORANGE]];
+const CURSOR = [GREEN, YELLOW, BLUE, RED, BUFF, CYAN, MAGENTA, ORANGE];
+
+// MC6847 internal font, ASCII 32..95, glyph rows 3..9 of the 8x12 cell (dumped from XRoar)
+const FONT = '00000000000000080808080800081414140000000014143600361414081E201C023C0832320408102626102828102A241A18181800000000081020202010080804020202040800081C3E1C08000008083E080800000000303010200000003E0000000000000000303002020408102020182424242424180818080808081C1C22021C20203E1C22020C02221C040C143E0404043E203C0202221C1C20203C22221C3E0204081020201C22221C22221C1C22221E02021C00181800181800181800181808100408102010080400003E003E000010080402040810182404080800081C22021A2A2A1C081422223E22223C12121C12123C1C22202020221C3C12121212123C3E20203C20203E3E20203C2020201E20202622221E2222223E2222221C08080808081C0202020222221C222428302824222020202020203E22362A2A22222222322A262222223E22222222223E3C22223C2020201C2222222A241A3C22223C2824221C22100804221C3E0808080808082222222222221C222222141408082222222A2A362222221408142222222214080808083E02040810203E38202020202038202010080402020E02020202020E081C2A080808080008103E100800';
+const glyph = (g, r) => r < 3 || r > 9 ? 0 : parseInt(FONT.substr((g * 7 + r - 3) * 2, 2), 16);
+
+// ---------- machine state ----------
+const T = new Uint8Array(512).fill(32); // text screen (ASCII)
+let cur = 0;                            // text cursor
+const VR = new Uint8Array(6144);        // graphics pages 1-4
+let gfx = false, css = 0, pmode = 2, fg = 1, bg = 0, gx = 128, gy = 96;
+let vars = {}, stack = [], prog = [], li = -1, L = [], p = 0, running = false;
+let vt = performance.now(), tBase = vt, cost = 0, fixedCost = -1;
+let keyBuf = 0, inputLine = '', autotype = '';
+const held = new Set();
+let oct = 2, nlen = 4, tempo = 2, vol = 15;
+
+// ---------- text output ----------
+function putc(c) {
+  if (c === 13) { do T[cur++] = 32; while (cur & 31); }
+  else if (c === 8) { if (cur > 0) T[--cur] = 32; return; }
+  else T[cur++] = c;
+  if (cur >= 512) { T.copyWithin(0, 32); T.fill(32, 480); cur -= 32; }
+}
+const out = s => { for (const ch of s) putc(ch.charCodeAt(0)); cost += s.length * 0.05; };
+const num2s = n => {
+  let s = Number.isInteger(n) && Math.abs(n) < 1e9 ? String(Math.abs(n)) : String(parseFloat(Math.abs(n).toPrecision(9)));
+  if (s.startsWith('0.')) s = s.slice(1);
+  return (n < 0 ? '-' : ' ') + s;
+};
+
+// ---------- tokenizer (crunch keywords anywhere, like Color BASIC) ----------
+const KW = ['INKEY$','STR$','CHR$','TIMER','PRINT','PRESET','PSET','PMODE','PCLS','PAINT','PLAY','PEEK','SCREEN',
+  'CIRCLE','COLOR','CLS','LINE','DRAW','GOSUB','GOTO','RETURN','THEN','ELSE','STEP','NEXT','FOR','END','RUN',
+  'LIST','INT','RND','AND','OR','NOT','IF','ON','TO','REM'].sort((a, b) => b.length - a.length);
+const matchKW = (s, i) => KW.find(k => s.startsWith(k, i));
+// ponytail: only the keywords this listing (plus RUN/LIST) needs; others give ?SN like a typo would
+function crunch(src) {
+  const t = [];
+  for (let i = 0; i < src.length;) {
+    const c = src[i];
+    if (c === ' ') { i++; continue; }
+    if (c === '"') { let j = src.indexOf('"', i + 1); if (j < 0) j = src.length; t.push({ k: 'S', v: src.slice(i + 1, j) }); i = j + 1; continue; }
+    if (c === "'") break;
+    const kw = matchKW(src, i);
+    if (kw) { if (kw === 'REM') break; t.push({ k: 'K', v: kw }); i += kw.length; continue; }
+    if (/[0-9.]/.test(c)) { let j = i; while (j < src.length && /[0-9.]/.test(src[j])) j++; t.push({ k: 'N', v: parseFloat(src.slice(i, j)) }); i = j; continue; }
+    if (/[A-Z]/.test(c)) {
+      let j = i + 1;
+      while (j < src.length && /[A-Z0-9]/.test(src[j])) j++; // ECB: no keywords inside a variable name ("TCTHEN")
+      let name = src.slice(i, j).slice(0, 2);
+      if (src[j] === '$') { name += '$'; j++; }
+      t.push({ k: 'V', v: name }); i = j; continue;
+    }
+    t.push({ k: 'P', v: c }); i++;
+  }
+  return t;
+}
+function setLine(n, src) {
+  prog = prog.filter(x => x.n !== n);
+  if (src) prog.push({ n, src, toks: crunch(src) });
+  prog.sort((a, b) => a.n - b.n);
+}
+
+// ---------- expression evaluator ----------
+class BasicError { constructor(code) { this.code = code; } }
+const err = code => { throw new BasicError(code); };
+const isP = v => p < L.length && L[p].k === 'P' && L[p].v === v;
+const isK = v => p < L.length && L[p].k === 'K' && L[p].v === v;
+const expect = v => { if (!isP(v)) err('SN'); p++; };
+const lineNum = () => { const t = L[p++]; if (!t || t.k !== 'N') err('SN'); return t.v; };
+const stmtEnd = () => p >= L.length || isP(':') || isK('ELSE');
+const numArg = () => { const v = expr(); if (typeof v !== 'number') err('TM'); return v; };
+
+function expr() { let a = andE(); while (isK('OR')) { p++; a = a | andE(); } return a; }
+function andE() { let a = notE(); while (isK('AND')) { p++; a = a & notE(); } return a; }
+function notE() { if (isK('NOT')) { p++; return ~notE(); } return rel(); }
+function rel() {
+  let a = add();
+  while (isP('=') || isP('<') || isP('>')) {
+    let op = L[p++].v;
+    if (isP('=') || isP('>') || isP('<')) op += L[p++].v;
+    const b = add();
+    if (typeof a !== typeof b) err('TM');
+    const r = op === '=' ? a === b : op === '<>' || op === '><' ? a !== b : op === '<' ? a < b : op === '>' ? a > b
+      : op === '<=' || op === '=<' ? a <= b : a >= b;
+    a = r ? -1 : 0;
+  }
+  return a;
+}
+function add() {
+  let a = mul();
+  while (isP('+') || isP('-')) {
+    const o = L[p++].v, b = mul();
+    if (typeof a !== typeof b || (o === '-' && typeof a === 'string')) err('TM');
+    a = o === '+' ? a + b : a - b;
+  }
+  return a;
+}
+function mul() {
+  let a = pw();
+  while (isP('*') || isP('/')) { const o = L[p++].v, b = pw(); if (o === '/' && b === 0) err('/0'); a = o === '*' ? a * b : a / b; }
+  return a;
+}
+function pw() { let a = un(); while (isP('^')) { p++; a = Math.pow(a, un()); } return a; }
+function un() { if (isP('-')) { p++; return -un(); } if (isP('+')) { p++; return un(); } return prim(); }
+function prim() {
+  const t = L[p++];
+  if (!t) err('SN');
+  if (t.k === 'N' || t.k === 'S') return t.v;
+  if (t.k === 'V') return vars[t.v] ?? (t.v.endsWith('$') ? '' : 0);
+  if (t.k === 'P' && t.v === '(') { const v = expr(); expect(')'); return v; }
+  if (t.k === 'K') {
+    if (t.v === 'INKEY$') { const k = keyBuf; keyBuf = 0; return k ? String.fromCharCode(k) : ''; }
+    if (t.v === 'TIMER') return ((vt - tBase) * 0.06 | 0) & 0xffff;
+    if (['RND', 'INT', 'PEEK', 'STR$', 'CHR$'].includes(t.v)) {
+      expect('('); const a = numArg(); expect(')');
+      switch (t.v) {
+        case 'RND': return a >= 1 ? Math.floor(Math.random() * Math.floor(a)) + 1 : Math.random(); // ponytail: Math.random, not the ROM's seed
+        case 'INT': return Math.floor(a);
+        case 'PEEK': return peek(a);
+        case 'STR$': return num2s(a);
+        case 'CHR$': return String.fromCharCode(a);
+      }
+    }
+  }
+  err('SN');
+}
+
+// ---------- keyboard ----------
+// Rollover table at 338..345, one byte per keyboard column; a held key clears its row bit.
+const MATRIX = ['@HPX08\r', 'AIQY19\f', 'BJRZ2:\x03', 'CKS^3;', 'DLT\n4,', 'EMU\b5-', 'FNV\t6.', 'GOW 7/'];
+function peek(a) {
+  if (a < 338 || a > 345) return 0;
+  let v = 255;
+  for (const k of held) { const r = MATRIX[a - 338].indexOf(String.fromCharCode(k)); if (r >= 0) v &= ~(1 << r); }
+  return v;
+}
+function cocoKey(e) {
+  switch (e.key) {
+    case 'Enter': return 13;
+    case 'Backspace': case 'ArrowLeft': return 8;
+    case 'ArrowRight': return 9;
+    case 'ArrowUp': return 94;
+    case 'ArrowDown': return 10;
+    case 'Escape': return 3;
+    case 'Home': return 12;
+  }
+  if (e.key.length === 1) { const c = e.key.toUpperCase().charCodeAt(0); if (c >= 32 && c <= 95) return c; }
+  return 0;
+}
+addEventListener('keydown', e => {
+  if (e.metaKey || e.ctrlKey || e.altKey) return;
+  const k = cocoKey(e);
+  if (!k) return;
+  e.preventDefault();
+  initAudio();
+  if (e.repeat) return; // no autorepeat on a CoCo
+  autotype = '';
+  held.add(k);
+  if (k === 3) { if (running) stop('\rBREAK' + (li >= 0 ? ' IN ' + prog[li].n : '')); else { inputLine = ''; putc(13); } return; }
+  if (running) keyBuf = k; else typeKey(k);
+});
+addEventListener('keyup', e => held.delete(cocoKey(e)));
+addEventListener('blur', () => held.clear());
+
+function typeKey(k) {
+  if (k === 13) { putc(13); const s = inputLine.trim(); inputLine = ''; if (s) enter(s); }
+  else if (k === 8) { if (inputLine) { inputLine = inputLine.slice(0, -1); putc(8); } }
+  else if (k >= 32 && inputLine.length < 249) { inputLine += String.fromCharCode(k); putc(k); }
+}
+function enter(s) {
+  const m = /^(\d+)\s*(.*)$/.exec(s);
+  if (m) return setLine(+m[1], m[2]);
+  L = crunch(s); li = -1; p = 0; running = true; vt = performance.now();
+}
+function stop(msg) {
+  running = false; gfx = false;
+  if (msg) { if (msg[0] === '\r') putc(13); else if (cur & 31) putc(13); out(msg.replace('\r', '')); putc(13); }
+  else if (cur & 31) putc(13);
+  out('OK'); putc(13);
+}
+
+// ---------- sound ----------
+let AC = null;
+function initAudio() {
+  if (!AC) { try { AC = new AudioContext(); } catch (e) {} }
+  else if (AC.state === 'suspended') AC.resume();
+}
+function play(s) {
+  const t0 = AC ? AC.currentTime + Math.max(0, (vt - performance.now()) / 1000) : 0;
+  const sec = l => 256 / (l * tempo * 60); // T2 L4 = 0.533s, measured in XRoar
+  let i = 0, dur = 0;
+  const num = () => { const m = /^\d+/.exec(s.slice(i)); if (!m) return null; i += m[0].length; return +m[0]; };
+  while (i < s.length) {
+    const c = s[i++];
+    if (c === 'O') { oct = num() ?? oct; continue; }
+    if (c === 'L') { nlen = num() ?? nlen; continue; }
+    if (c === 'T') { tempo = num() ?? tempo; continue; }
+    if (c === 'V') { vol = num() ?? vol; continue; }
+    if (c === 'P') { dur += sec(num() ?? 4); continue; }
+    let note;
+    if ('CDEFGAB'.includes(c)) {
+      note = { C: 1, D: 3, E: 5, F: 6, G: 8, A: 10, B: 12 }[c];
+      if (s[i] === '#' || s[i] === '+') { note++; i++; } else if (s[i] === '-') { note--; i++; }
+    } else if (/\d/.test(c)) { i--; note = num(); }
+    else continue;
+    let d = sec(nlen);
+    while (s[i] === '.') { d *= 1.5; i++; }
+    if (AC) {
+      const o = AC.createOscillator(), g = AC.createGain();
+      o.type = 'square';
+      o.frequency.value = 261.63 * 2 ** (oct - 2 + (note - 1) / 12);
+      g.gain.value = 0.1 * vol / 31;
+      o.connect(g).connect(AC.destination);
+      o.start(t0 + dur); o.stop(t0 + dur + d);
+    }
+    dur += d;
+  }
+  cost += dur * 1000;
+}
+
+// ---------- graphics (Extended Color BASIC semantics) ----------
+const four = () => pmode & 1;
+const xdiv = () => pmode === 4 ? 1 : 2;
+const ydiv = () => pmode <= 1 ? 2 : 1;
+const bpr = () => four() || pmode === 4 ? 32 : 16;
+const colorBits = c => four() ? (c < 1 ? 0 : (c - 1) & 3) : (c > 0 ? 1 : 0);
+function setP(x, y, c) {
+  const b = bpr();
+  if (four()) { const i = y * b + (x >> 2), sh = 6 - 2 * (x & 3); VR[i] = VR[i] & ~(3 << sh) | c << sh; }
+  else { const i = y * b + (x >> 3), m = 0x80 >> (x & 7); VR[i] = c ? VR[i] | m : VR[i] & ~m; }
+}
+function getP(x, y) {
+  const b = bpr();
+  return four() ? VR[y * b + (x >> 2)] >> (6 - 2 * (x & 3)) & 3 : VR[y * b + (x >> 3)] >> (7 - (x & 7)) & 1;
+}
+function plot(x, y, c) { if (x >= 0 && x <= 255 && y >= 0 && y <= 191) setP(x / xdiv() | 0, y / ydiv() | 0, c); }
+const cx = x => Math.min(255, Math.max(0, x | 0)), cy = y => Math.min(191, Math.max(0, y | 0));
+function line(x0, y0, x1, y1, c) {
+  // ECB clamps to the screen edge, converts to the mode's physical pixels, then steps along the
+  // major axis in increasing order; minor axis rounds, ties toward the end. Pixel-exact vs XRoar.
+  const xd = xdiv(), yd = ydiv();
+  x0 = cx(x0) / xd | 0; y0 = cy(y0) / yd | 0; x1 = cx(x1) / xd | 0; y1 = cy(y1) / yd | 0;
+  const xmaj = Math.abs(x1 - x0) >= Math.abs(y1 - y0);
+  if (xmaj ? x1 < x0 : y1 < y0) [x0, y0, x1, y1] = [x1, y1, x0, y0];
+  const M = Math.max(x1 - x0, y1 - y0), d = xmaj ? y1 - y0 : x1 - x0;
+  cost += (M + 1) * 0.3;
+  for (let i = 0; i <= M; i++) {
+    const v = M ? i * d / M : 0, o = d > 0 ? Math.floor(v + 0.5) : Math.ceil(v - 0.5);
+    if (xmaj) setP(x0 + i, y0 + o, c); else setP(x0 + o, y0 + i, c);
+  }
+}
+function paint(x, y, c, b) {
+  const W = 256 / xdiv(), H = 192 / ydiv(), ok = (x, y) => { const v = getP(x, y); return v !== b && v !== c; };
+  const st = [[x / xdiv() | 0, y / ydiv() | 0]];
+  let n = 0;
+  while (st.length) {
+    const [sx, sy] = st.pop();
+    if (!ok(sx, sy)) continue;
+    let l = sx, r = sx;
+    while (l > 0 && ok(l - 1, sy)) l--;
+    while (r < W - 1 && ok(r + 1, sy)) r++;
+    for (let i = l; i <= r; i++) { setP(i, sy, c); n++; }
+    for (const ny of [sy - 1, sy + 1]) if (ny >= 0 && ny < H) for (let i = l; i <= r; i++) if (ok(i, ny)) st.push([i, ny]);
+  }
+  cost += n * 0.3;
+}
+function circle(ox, oy, r, c, hw, s, e) {
+  // ECB: 64-segment polygon in the mode's physical pixels, vertex offsets truncated toward the centre.
+  // ponytail: exact in PMODE 4; in PMODE 3 small circles still differ from the ROM by a pixel or two.
+  if (e <= s) e += 1;
+  const n = Math.max(1, Math.ceil((e - s) * 64)), xd = xdiv(), yd = ydiv();
+  let px, py;
+  for (let i = 0; i <= n; i++) {
+    const a = (s + (e - s) * i / n) * 2 * Math.PI;
+    const X = ((ox / xd | 0) + Math.trunc(r / xd * Math.cos(a))) * xd, Y = ((oy / yd | 0) + Math.trunc(r * hw / yd * Math.sin(a))) * yd;
+    if (i) { line(px, py, X, Y, c); cost += 0.9; }
+    px = X; py = Y;
+  }
+}
+function draw(s) {
+  let i = 0, blank = false, noupd = false;
+  const num = () => { while (s[i] === ' ') i++; const m = /^[+-]?\d+/.exec(s.slice(i)); if (!m) return null; i += m[0].length; return m[0]; };
+  while (i < s.length) {
+    const c = s[i++];
+    let nx = gx, ny = gy;
+    if (c === 'B') { blank = true; continue; }
+    if (c === 'N') { noupd = true; continue; }
+    cost += 1;
+    const d = { U: [0, -1], D: [0, 1], L: [-1, 0], R: [1, 0], E: [1, -1], F: [1, 1], G: [-1, 1], H: [-1, -1] }[c];
+    if (d) { const n = +(num() ?? 1); nx = gx + d[0] * n; ny = gy + d[1] * n; }
+    else if (c === 'M') {
+      const a = num(); while (s[i] === ' ') i++; if (s[i] === ',') i++; const b = num();
+      nx = /^[+-]/.test(a) ? gx + +a : +a; ny = /^[+-]/.test(b) ? gy + +b : +b;
+    }
+    else if (c === 'C') { fg = colorBits(+(num() ?? 4)); continue; }
+    else { if ('SA'.includes(c)) num(); continue; }
+    nx = cx(nx); ny = cy(ny);
+    if (!blank) line(gx, gy, nx, ny, fg);
+    if (!noupd) { gx = nx; gy = ny; }
+    blank = noupd = false;
+  }
+}
+function xy() {
+  expect('('); const x = numArg(); expect(','); const y = numArg(); expect(')');
+  return [cx(x), cy(y)];
+}
+
+// ---------- statements ----------
+function gotoLine(n) {
+  const i = prog.findIndex(x => x.n === n);
+  if (i < 0) err('UL');
+  li = i; L = prog[i].toks; p = 0;
+}
+function nextLine() {
+  if (li < 0 || li + 1 >= prog.length) return stop();
+  li++; L = prog[li].toks; p = 0;
+}
+function run() { vars = {}; stack = []; if (!prog.length) return stop(); li = 0; L = prog[0].toks; p = 0; }
+
+function stmt() {
+  if (p >= L.length) { fixedCost = 0.1; return nextLine(); }
+  const t = L[p++];
+  if (t.k === 'P' && t.v === ':') { fixedCost = 0; return; }
+  if (t.k === 'V') {
+    expect('='); const v = expr();
+    if (t.v.endsWith('$') !== (typeof v === 'string')) err('TM');
+    vars[t.v] = v; return;
+  }
+  if (t.k !== 'K') err('SN');
+  switch (t.v) {
+    case 'ELSE': p = L.length; return;
+    case 'TIMER': expect('='); tBase = vt - numArg() / 0.06; return;
+    case 'IF': {
+      const c = expr();
+      if (isK('THEN')) p++; else if (!isK('GOTO')) err('SN');
+      if (c) { if (p < L.length && L[p].k === 'N') gotoLine(L[p].v); return; }
+      cost += 1.4; // scanning the rest of the line for ELSE
+      for (let d = 0; p < L.length;) {
+        const x = L[p++];
+        if (x.k === 'K' && x.v === 'IF') d++;
+        else if (x.k === 'K' && x.v === 'ELSE' && d-- === 0) { if (p < L.length && L[p].k === 'N') gotoLine(L[p].v); return; }
+      }
+      return;
+    }
+    case 'GOTO': return gotoLine(lineNum());
+    case 'GOSUB': { const n = lineNum(); stack.push({ g: 1, L, li, p }); return gotoLine(n); }
+    case 'RETURN': {
+      while (stack.length && !stack[stack.length - 1].g) stack.pop();
+      const f = stack.pop(); if (!f) err('RG');
+      L = f.L; li = f.li; p = f.p; return;
+    }
+    case 'ON': {
+      const n = Math.floor(numArg()), k = L[p++];
+      if (!k || k.k !== 'K' || (k.v !== 'GOTO' && k.v !== 'GOSUB')) err('SN');
+      const ts = [lineNum()];
+      while (isP(',')) { p++; ts.push(lineNum()); }
+      if (n < 1 || n > ts.length) return;
+      if (k.v === 'GOSUB') stack.push({ g: 1, L, li, p });
+      return gotoLine(ts[n - 1]);
+    }
+    case 'FOR': {
+      const v = L[p++]; if (!v || v.k !== 'V') err('SN');
+      expect('='); vars[v.v] = numArg();
+      if (!isK('TO')) err('SN'); p++;
+      const lim = numArg(); let st = 1;
+      if (isK('STEP')) { p++; st = numArg(); }
+      for (let i = stack.length - 1; i >= 0 && !stack[i].g; i--) if (stack[i].v === v.v) { stack.length = i; break; }
+      stack.push({ v: v.v, lim, st, L, li, p }); return;
+    }
+    case 'NEXT': {
+      const name = p < L.length && L[p].k === 'V' ? L[p++].v : null;
+      let i = stack.length - 1;
+      while (i >= 0 && !stack[i].g && name && stack[i].v !== name) i--;
+      if (i < 0 || stack[i].g) err('NF');
+      stack.length = i + 1;
+      const f = stack[i];
+      vars[f.v] += f.st;
+      if (f.st >= 0 ? vars[f.v] <= f.lim : vars[f.v] >= f.lim) { L = f.L; li = f.li; p = f.p; } else stack.pop();
+      fixedCost = 1.28; return;
+    }
+    case 'PRINT': {
+      gfx = false;
+      if (isP('@')) { p++; const a = numArg(); if (a < 0 || a > 511) err('FC'); cur = a | 0; if (isP(',')) p++; }
+      let sep = null;
+      while (!stmtEnd()) {
+        if (isP(';')) { p++; sep = ';'; continue; }
+        if (isP(',')) { p++; sep = ','; if ((cur & 31) >= 16) putc(13); else while ((cur & 31) < 16) putc(32); continue; }
+        const v = expr(); sep = null;
+        out(typeof v === 'string' ? v : num2s(v) + ' ');
+      }
+      if (sep === null) putc(13);
+      return;
+    }
+    case 'CLS': if (!stmtEnd()) numArg(); T.fill(32); cur = 0; gfx = false; return;
+    case 'PMODE': pmode = numArg() | 0; if (isP(',')) { p++; numArg(); } fg = four() ? 3 : 1; bg = 0; return;
+    case 'SCREEN': gfx = numArg() !== 0; if (isP(',')) { p++; css = numArg() & 1; } return;
+    case 'COLOR': fg = colorBits(numArg()); if (isP(',')) { p++; bg = colorBits(numArg()); } return;
+    case 'PCLS': {
+      const c = stmtEnd() ? bg : colorBits(numArg());
+      const n = bpr() * 192 / ydiv(), pat = four() ? c * 0x55 : c * 0xff;
+      VR.fill(pat, 0, n); cost += n * 0.0174; return;
+    }
+    case 'PSET': case 'PRESET': {
+      expect('('); const x = numArg(); expect(','); const y = numArg();
+      let c = t.v === 'PSET' ? fg : bg;
+      if (isP(',')) { p++; c = colorBits(numArg()); }
+      expect(')'); plot(x | 0, y | 0, c); cost += 1.5; return;
+    }
+    case 'LINE': {
+      let x0 = gx, y0 = gy;
+      if (isP('(')) [x0, y0] = xy();
+      expect('-'); const [x1, y1] = xy(); expect(',');
+      const m = L[p++]; if (!m || (m.v !== 'PSET' && m.v !== 'PRESET')) err('SN');
+      const c = m.v === 'PSET' ? fg : bg;
+      let opt = ''; if (isP(',')) { p++; opt = L[p++]?.v; }
+      if (opt === 'BF') {
+        for (let y = Math.min(y0, y1); y <= Math.max(y0, y1); y++) for (let x = Math.min(x0, x1); x <= Math.max(x0, x1); x++) plot(x, y, c);
+        cost += (Math.abs(x1 - x0) + 1) * (Math.abs(y1 - y0) + 1) * 0.062;
+      } else if (opt === 'B') {
+        line(x0, y0, x1, y0, c); line(x1, y0, x1, y1, c); line(x1, y1, x0, y1, c); line(x0, y1, x0, y0, c);
+      } else line(x0, y0, x1, y1, c);
+      gx = x1; gy = y1; return;
+    }
+    case 'CIRCLE': {
+      const [x, y] = xy(); expect(','); const r = numArg();
+      let c = fg, hw = 1, s = 0, e = 1;
+      if (isP(',')) { p++; if (!isP(',')) c = colorBits(numArg());
+        if (isP(',')) { p++; if (!isP(',')) hw = numArg();
+          if (isP(',')) { p++; s = numArg(); if (isP(',')) { p++; e = numArg(); } } } }
+      circle(x, y, r, c, hw, s, e); return;
+    }
+    case 'PAINT': {
+      const [x, y] = xy(); let c = fg, b = fg;
+      if (isP(',')) { p++; c = colorBits(numArg()); if (isP(',')) { p++; b = colorBits(numArg()); } }
+      paint(x, y, c, b); return;
+    }
+    case 'DRAW': { const s = expr(); if (typeof s !== 'string') err('TM'); draw(s); return; }
+    case 'PLAY': { const s = expr(); if (typeof s !== 'string') err('TM'); play(s); return; }
+    case 'END': return stop();
+    case 'RUN': { const n = p < L.length && L[p].k === 'N' ? L[p].v : null; run(); if (n !== null) gotoLine(n); return; }
+    case 'LIST': {
+      let a = 0, b = 1e9;
+      if (p < L.length && L[p].k === 'N') a = b = L[p++].v;
+      if (isP('-')) { p++; b = p < L.length && L[p].k === 'N' ? L[p++].v : 1e9; }
+      for (const x of prog) if (x.n >= a && x.n <= b) { out(x.n + ' ' + x.src); putc(13); }
+      return stop();
+    }
+  }
+  err('SN');
+}
+
+function step() {
+  cost = 0; fixedCost = -1;
+  const L0 = L, p0 = p, ln = li >= 0 ? prog[li].n : -1;
+  try { stmt(); }
+  catch (e) { if (!(e instanceof BasicError)) throw e; stop('?' + e.code + ' ERROR' + (ln >= 0 ? ' IN ' + ln : '')); }
+  // interpreter cost: per token, plus ASCII->float conversion of every numeric constant (measured in XRoar)
+  let tk = 1;
+  if (L === L0) { tk = 0; for (let i = p0; i < p; i++) tk += 0.35 + (L[i].k === 'N' ? String(L[i].v).length * 0.8 : 0); }
+  vt += SPEED * (fixedCost >= 0 ? fixedCost : 0.3 + cost + tk);
+}
+
+// ---------- video ----------
+const cv = document.getElementById('scr'), ctx = cv.getContext('2d');
+const img = ctx.createImageData(320, 240), px = new Uint32Array(img.data.buffer);
+function render(now) {
+  px.fill(gfx ? (css ? BUFF : GREEN) : BLACK);
+  if (gfx) {
+    const f = four(), xd = xdiv(), yd = ydiv(), b = bpr();
+    for (let y = 0; y < 192; y++) {
+      const row = (y / yd | 0) * b, o = (y + 24) * 320 + 32;
+      for (let x = 0; x < 256; x++) {
+        const X = x / xd | 0;
+        let c;
+        if (f) c = PAL4[css][VR[row + (X >> 2)] >> (6 - 2 * (X & 3)) & 3];
+        else if (pmode === 4 && css) { // NTSC artifact colours
+          const x0 = x & ~1, l = VR[row + (x0 >> 3)] >> (7 - (x0 & 7)) & 1, r = VR[row + (x0 >> 3)] >> (6 - (x0 & 7)) & 1;
+          c = l && r ? BUFF : l ? ART_L : r ? ART_R : BLACK;
+        } else c = VR[row + (X >> 3)] >> (7 - (X & 7)) & 1 ? (css ? BUFF : GREEN) : BLACK;
+        px[o + x] = c;
+      }
+    }
+  } else {
+    const blink = !running && ((now / 250) | 0) % 2 === 0;
+    for (let i = 0; i < 512; i++) {
+      const ch = T[i], inv = ch >= 96, g = inv ? ch - 64 : ch >= 32 && ch < 96 ? ch - 32 : 0;
+      const ox = 32 + (i & 31) * 8, oy = 24 + (i >> 5) * 12;
+      const block = !running && i === cur ? CURSOR[((now / 250) | 0) % 8] : 0;
+      for (let r = 0; r < 12; r++) {
+        const bits = glyph(g, r), o = (oy + r) * 320 + ox;
+        for (let c = 0; c < 8; c++) px[o + c] = block && blink ? block : ((bits >> (7 - c)) & 1) !== +inv ? INK : GREEN;
+      }
+    }
+  }
+  ctx.putImageData(img, 0, 0);
+}
+
+// ---------- main loop ----------
+let nextAuto = 0;
+function frame(now) {
+  if (running) {
+    if (vt < now - 50) vt = now - 50;
+    for (let n = 0; running && vt < now && n < 200000; n++) step();
+  } else if (autotype && now > nextAuto) { typeKey(autotype.charCodeAt(0)); autotype = autotype.slice(1); nextAuto = now + 150; }
+  render(now);
+  requestAnimationFrame(frame);
+}
+
+for (const s of document.getElementById('bas').textContent.split('\n')) {
+  const m = /^(\d+) ?(.*)$/.exec(s.trimEnd());
+  if (m) setLine(+m[1], m[2]);
+}
+out('EXTENDED COLOR BASIC 1.1'); putc(13);
+out('COPR. 1980, 1981 BY TANDY'); putc(13);
+out('UNDER LICENSE FROM MICROSOFT'); putc(13); putc(13);
+out('OK'); putc(13);
+autotype = 'RUN\r'; nextAuto = performance.now() + 1200;
+requestAnimationFrame(frame);
+</script>
+</body>
+</html>
