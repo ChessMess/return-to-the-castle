@@ -451,9 +451,16 @@ function stop(msg) {
 // ---------- sound ----------
 let AC = null;
 function initAudio() {
-  if (!AC) { try { AC = new AudioContext(); } catch (e) {} }
-  else if (AC.state === 'suspended') AC.resume();
+  if (!AC) { try { AC = new (window.AudioContext || window.webkitAudioContext)(); } catch (e) { return; } }
+  if (AC.state !== 'running') {
+    // iOS only unlocks audio inside touchend/click, and only once something actually plays
+    AC.resume();
+    const src = AC.createBufferSource();
+    src.buffer = AC.createBuffer(1, 1, 22050);
+    src.connect(AC.destination); src.start(0);
+  }
 }
+for (const ev of ['touchend', 'click']) addEventListener(ev, initAudio, { passive: true });
 function play(s) {
   const t0 = AC ? AC.currentTime + Math.max(0, (vt - performance.now()) / 1000) : 0;
   const sec = l => 256 / (l * tempo * 60); // T2 L4 = 0.533s, measured in XRoar
