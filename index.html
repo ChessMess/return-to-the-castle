@@ -31,7 +31,7 @@ p{margin:0 16px;text-align:center}
 <body>
 <canvas id="scr" width="320" height="240"></canvas>
 <p>RETURN TO THE CASTLE by James Wood &middot; 80 Micro, April 1983 &middot; TRS-80 Color Computer, 16K Extended Color BASIC<br>
-D drink &middot; F fish &middot; G gold &middot; S slay &middot; &larr; &rarr; arrows &middot; ENTER &middot; ESC = BREAK (then RUN or LIST)</p>
+D drink &middot; F fish &middot; G gold &middot; S slay &middot; &larr; &rarr; arrows &middot; ENTER &middot; SHIFT+ESC = BREAK (then RUN or LIST)</p>
 <div id="pad"><button data-k="65">A</button><button data-k="66">B</button><button data-k="68">D</button><button data-k="70">F</button><button data-k="71">G</button><button data-k="78">N</button><button data-k="82">R</button><button data-k="83">S</button><button data-k="84">T</button><button data-k="87">W</button><button data-k="89">Y</button><button data-k="0">RUN</button><button class="w2" data-k="8">&larr;</button><button class="w2" data-k="13">ENTER</button><button class="w2" data-k="9">&rarr;</button></div>
 
 <script type="text/plain" id="bas">5 ' JAMES W. WOOD,424 N. MISSOURI,ATWOOD, IL, 61913, MAY-1982
@@ -66,9 +66,9 @@ D drink &middot; F fish &middot; G gold &middot; S slay &middot; &larr; &rarr; a
 1050 COLOR2,1:LINE(190,110)-(200,60),PSET,BF
 1060 CIRCLE(195,45),30,1,.5
 1070 PAINT(195,45),1,1
-1080 SCREEN1,0:FORTI=1TO700:NEXTTI:IFINKEY$="D"THENW=W+1:S=S+2:IFRND(10)=1THENP=1:S=S-10:W=W-1
+1080 SCREEN1,0:FORTI=1TO1000:NEXTTI:IFINKEY$="D"THENW=W+1:S=S+2:IFRND(10)=1THENP=1:S=S-10:W=W-1
 1085 F=RND(5):IFF=1 THENDRAW"BM"+STR$(RND(40)+80)+",139R5E2D1G1D1F1D1H2L5"ELSERETURN
-1086 FORTI=1TO200:NEXTTI:IFINKEY$="F"THENS=S+5:CLS:PRINT@460,"GOOD FISH !"ELSEPRINT@460,"MISSED"
+1086 FORTI=1TO350:NEXTTI:IFINKEY$="F"THENS=S+5:CLS:PRINT@460,"GOOD FISH !"ELSEPRINT@460,"MISSED"
 1087 FORTI=1TO600:NEXTTI:RETURN
 2000 PMODE3,1:PCLS:S=S-5
 2010 FORA=1TO30:PSET(RND(255),RND(130),RND(3)+1):NEXTA:PMODE4,1:SCREEN1,1
@@ -163,7 +163,7 @@ D drink &middot; F fish &middot; G gold &middot; S slay &middot; &larr; &rarr; a
 10010 COLOR1,3:LINE(0,112)-(255,191),PSET,BF
 10020 COLOR2,3:LINE(100,191)-(115,112),PSET:LINE-(135,112),PSET:LINE-(150,191),PSET:PAINT(104,198),2,2
 10030 COLOR4,1:LINE(0,0)-(255,191),PSET,B
-10100 SCREEN1,0:FORTI=1TO400:NEXTTI:RETURN
+10100 SCREEN1,0:FORTI=1TO700:NEXTTI:RETURN
 11000 FORTI=1TO900:NEXTTI:RETURN
 12000 IFRND(4)<4THENRETURNELSEPMODE3,1:PCLS3
 12005 COLOR2,3:LINE(0,110)-(255,130),PSET:PAINT(10,120),1,2
@@ -260,7 +260,7 @@ let gfx = false, css = 0, pmode = 2, fg = 1, bg = 0, gx = 128, gy = 96;
 let vars = {}, stack = [], prog = [], li = -1, L = [], p = 0, running = false;
 let vt = performance.now(), tBase = vt, cost = 0, fixedCost = -1;
 let keyBuf = 0, inputLine = '', autotype = '';
-const held = new Set();
+const held = new Set(), latch = new Map();
 let oct = 2, nlen = 4, tempo = 2, vol = 15;
 
 // ---------- text output ----------
@@ -381,7 +381,15 @@ const MATRIX = ['@HPX08\r', 'AIQY19\f', 'BJRZ2:\x03', 'CKS^3;', 'DLT\n4,', 'EMU\
 function peek(a) {
   if (a < 338 || a > 345) return 0;
   let v = 255;
-  for (const k of held) { const r = MATRIX[a - 338].indexOf(String.fromCharCode(k)); if (r >= 0) v &= ~(1 << r); }
+  const col = MATRIX[a - 338], now = performance.now();
+  for (const k of held) { const r = col.indexOf(String.fromCharCode(k)); if (r >= 0) v &= ~(1 << r); }
+  // a quick tap stays latched (up to 1.5s, longer than a fire-breath loop) until the program reads it once, so taps between
+  // the game's checks aren't lost; like the real rollover table, which keeps a key until rescanned
+  for (const [k, t] of latch) {
+    const r = col.indexOf(String.fromCharCode(k));
+    if (t <= now) latch.delete(k);
+    else if (r >= 0) { v &= ~(1 << r); latch.delete(k); }
+  }
   return v;
 }
 function cocoKey(e) {
@@ -391,7 +399,7 @@ function cocoKey(e) {
     case 'ArrowRight': return 9;
     case 'ArrowUp': return 94;
     case 'ArrowDown': return 10;
-    case 'Escape': return 3;
+    case 'Escape': return e.shiftKey ? 3 : 0; // SHIFT+ESC = BREAK, so a stray Esc can't stop the game
     case 'Home': return 12;
   }
   if (e.key.length === 1) { const c = e.key.toUpperCase().charCodeAt(0); if (c >= 32 && c <= 95) return c; }
@@ -400,7 +408,7 @@ function cocoKey(e) {
 function press(k) {
   initAudio();
   autotype = '';
-  held.add(k);
+  held.add(k); latch.set(k, performance.now() + 1500);
   if (k === 3) { if (running) stop('\rBREAK' + (li >= 0 ? ' IN ' + prog[li].n : '')); else { inputLine = ''; putc(13); } return; }
   if (running) keyBuf = k; else typeKey(k);
 }
