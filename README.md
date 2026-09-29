@@ -5,6 +5,10 @@
 "Return to the Castle" by James Wood, published as a type-in listing in *80 Micro*, April 1983,
 for the TRS-80 Color Computer (16K, Extended Color BASIC).
 
+The original magazine: [80 Micro, April 1983 (full issue, PDF)](80Microcomputing_0483_text.pdf).
+The article and listing are on pages 326–331
+([open at page 326](https://chessmess.github.io/return-to-the-castle/80Microcomputing_0483_text.pdf#page=326)).
+
 `castle.bas` is the original listing, transcribed and verified on XRoar. `index.html` runs it
 on a small Extended Color BASIC / MC6847 emulation in the browser, with timing, graphics
 and keyboard behaviour matched against XRoar. A few small changes make it friendlier to play today:
