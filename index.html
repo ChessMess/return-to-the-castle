@@ -192,7 +192,7 @@ D drink &middot; F fish &middot; G gold &middot; S slay &middot; &larr; &rarr; a
 13072 FC=RND(3):WC=RND(2)
 13073 PRINT"FOOD COSTS";FC;"GOLD COINS":PRINT"WATER COSTS";WC;"GOLD COINS":PRINT:PRINT"(W)ATER, (F)OOD, OR (B)OTH?"
 13074 A$=INKEY$:IFA$="W"THEN IF WC>TC THENGOTO13200ELSE TC=TC-WC:W=W+1:GOTO13300
-13076 IFA$="F"THENIFFC>TCTHENGOTO13200ELSETC=TC-FC:S=S+7:GOTO13300
+13076 IFA$="F"THENIF FC>TC THENGOTO13200ELSETC=TC-FC:S=S+7:GOTO13300
 13078 IFA$="B"THENIF FC+WC>TC THENGOTO13200ELSETC=TC-FC-WC:S=S+7:W=W+1:GOTO13300
 13079 GOTO13074
 13080 PRINT@192,"HE OFFERS 2 GOLD COINS FOR WATER"
@@ -238,7 +238,7 @@ D drink &middot; F fish &middot; G gold &middot; S slay &middot; &larr; &rarr; a
 'use strict';
 // A tiny Extended Color BASIC + MC6847 machine, just big enough to run the
 // original listing verbatim. Timings are measured against XRoar (60Hz ticks).
-const VERSION = '1.5'; // bump on every release; shown on the start screen
+const VERSION = '1.6'; // bump on every release; shown on the start screen
 const SPEED = 1; // ponytail: calibration knob, >1 = slower than a real CoCo
 
 // ---------- palette (sampled from XRoar) ----------
