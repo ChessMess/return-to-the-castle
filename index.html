@@ -103,7 +103,7 @@ D drink &middot; F fish &middot; G gold &middot; S slay &middot; &larr; &rarr; a
 6010 DRAW"BM132,144U4R4U4R4U12E24U28L4D4L16U12R20E2F2E2F2R4D8L4D32F12E8F4E8F4E8F4E8F4E8D6G32R10D4R4D6R4D4L16U4R4U4L8D4L4D4L44U4L4U8L8D8R4D4L18"
 6020 PAINT(134,142),4,4:AA=50:B=140
 6025 PSET(156,70,2):PSET(158,70,2)
-6030 DF=RND(5):IFDF=1THENFORA=144TO80STEP-1:PSET(A,220-A,2):NEXTA:PLAY"L255V31O2ABC":ELSE6032
+6030 DF=RND(8):IFDF=1THENFORA=144TO80STEP-1:PSET(A,220-A,2):NEXTA:PLAY"L255V31O2ABC":ELSE6032
 6031 IF AA=66 THENS=S-10ELSEIF AA>66 AND AA<91 THEN YD=1:PLAY"O1L64ABDBDCA":S=0:RETURN
 6032 LINE(AA,B)-(AA+24,B-22),PRESET,BF
 6033 IFAA<11 THENCO=1:S=S-5:RETURN ELSEIF AA>115 THEN KD=1:S=S+5:DI=DI+10:RETURN
@@ -238,7 +238,7 @@ D drink &middot; F fish &middot; G gold &middot; S slay &middot; &larr; &rarr; a
 'use strict';
 // A tiny Extended Color BASIC + MC6847 machine, just big enough to run the
 // original listing verbatim. Timings are measured against XRoar (60Hz ticks).
-const VERSION = '1.7'; // bump on every release; shown on the start screen
+const VERSION = '1.8'; // bump on every release; shown on the start screen
 const SPEED = 1; // ponytail: calibration knob, >1 = slower than a real CoCo
 
 // ---------- palette (sampled from XRoar) ----------
